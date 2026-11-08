@@ -12,7 +12,8 @@ import java.util.List;
 public class FigurinhaDAO {
 
 
-    public void inicializarBanco() {
+    public void inicializarBanco()
+    {
         try (Connection con = Conexao.getConexao();
              Statement stt = con.createStatement()) {
             System.out.println("Banco de dados criado com sucesso!");

@@ -20,19 +20,30 @@ public class AlbumService {
 
     }
 
+    public long totalRepetidas(List<Figurinha> todas){
+        return todas.stream()
+                .filter(figurinha -> figurinha.quantidade() > 1)
+                .mapToInt(figurinha -> figurinha.quantidade() - 1)
+                .sum();
+    }
+
+    public long totalFigurinhasObtidas(List<Figurinha> todas){
+        return todas.stream()
+                .filter(figurinha -> figurinha.quantidade() > 0)
+                .count();
+    }
+
     public  List<Figurinha> buscarPorSelecao(List<Figurinha> todas, Selecoes selecao){
         return todas.stream()
                 .filter(figurinha -> figurinha.selecao() == selecao)
                 .toList();
     }
 
-    public double calcularProgresso(List<Figurinha> todas, int totalFigurinhaAlbum){
+    public double percentualConcluido(List<Figurinha> todas, int totalFigurinhaAlbum){
         if(todas.isEmpty() || totalFigurinhaAlbum == 0){
             return 0.0;
         }
-        long adquiridas = todas.stream()
-                .filter( figurinha -> figurinha.quantidade() > 0)
-                .count();
+        long adquiridas = totalFigurinhasObtidas(todas);
 
         return ((double) adquiridas / totalFigurinhaAlbum) *100;
     }
