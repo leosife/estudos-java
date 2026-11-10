@@ -1,15 +1,19 @@
 package org.example;
 
+import java.util.Random;
+
 public class Personagem {
     private double vida = 100;
     private double escudo = 0;
     private double ataque = 5;
+    private double poderCura = 3;
 
     private double defesa;
     private String name;
 
     private Arma armaEquipada;
     private Armadura armaduraEquipada;
+    Random rd = new Random();
 
     public Personagem(String name) {
         this.name = name;
@@ -56,6 +60,7 @@ public class Personagem {
     }
 
     public double calcularDano() {
+
         if (armaEquipada == null) {
             return ataque;
         }
@@ -69,37 +74,36 @@ public class Personagem {
         return defesa + armaduraEquipada.getPoder();
     }
 
-    public void receberDano(double dano) {
+    public int receberDano(double dano) {
         dano -= calcularDefesa();
-        if (dano < 0) {
+        if (dano <= 0) {
             System.out.println("Ataque não causou dano");
-            return;
+            return 0;
 
         }
         double escudoAnterior = this.escudo;
         this.escudo -= dano;
-        if (escudo > 0 && escudo >= dano) {
-            System.out.println("O escudo absorveu o impacto! Escudo baixou de : "+escudoAnterior +" para "+ this.escudo);
-
-        }
 
 
         if (this.escudo < 0) {
+            if (escudoAnterior > 0){
+                System.out.println("Escudo absorveu " + escudoAnterior + " e quebrou!");
+            }
             dano = -this.escudo;
 
             this.vida -= dano;
-            System.out.println("Escudo absorveu " + this.escudo + " e quebrou!");
             this.escudo = 0;
             System.out.println("Ataque causou " + dano + " de dano, vida de " + this.name + " baixou a " + this.vida);
         } else {
-
+            System.out.println("O escudo absorveu o impacto! Escudo baixou de : "+escudoAnterior +" para "+ this.escudo);
         }
+        return (int) dano;
 
     }
 
 
-    public void atacar(Personagem atacado) {
-        atacado.receberDano(calcularDano());
+    public int atacar(Personagem atacado) {
+        return atacado.receberDano(calcularDano());
     }
 
 
@@ -115,5 +119,18 @@ public class Personagem {
         System.out.println(this.getName() + " equipou a arma " + arma.getNome());
 
 
+    }
+
+    public int curar(){
+        double vidaAntiga = getVida();
+        double novaVida = getVida() + poderCura;
+        if (novaVida > 100){
+            setVida(100);
+        } else{
+            setVida(novaVida);
+        }
+        int curaReal = (int) (vidaAntiga-novaVida);
+
+        return curaReal;
     }
 }
